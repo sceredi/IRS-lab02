@@ -10,6 +10,7 @@
     <system threads="0" />
     <experiment length="0"
       ticks_per_second="10"
+      random_seed="7"
     />
     <!--    You may want to set the seed of the RNG by: random_seed = "1" (or any n>0) in experiment  -->
     <!-- 		If you don't do this, the RNG is initialised by taking the CPU time -->
@@ -97,7 +98,7 @@
     <distribute>
       <position method="uniform" min="-1.9,-1.9,0" max="1.9,1.9,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="1" max_trials="100">
+      <entity quantity="4" max_trials="100">
         <foot-bot id="fb">
           <controller config="lua" />
         </foot-bot>

@@ -90,10 +90,10 @@ function collision_avoidance()
 		end
 	end
 	robot_wrapper.leds.set_all_colors("red")
-	if closest.pos <= 12 then
+	if closest.pos <= 7 then
 		left_v = MAX_VELOCITY
 		right_v = -MAX_VELOCITY
-	else
+	elseif closest.pos >= 18 then
 		left_v = -MAX_VELOCITY
 		right_v = MAX_VELOCITY
 	end
@@ -119,13 +119,13 @@ function light_controller()
 		robot_wrapper.leds.set_single_color(1, "yellow")
 		robot_wrapper.leds.set_single_color(12, "yellow")
 	elseif brightest.pos <= 12 then
-		left_v = robot_wrapper.random.uniform(0, -MAX_VELOCITY)
+		left_v = robot_wrapper.random.uniform(0, -MAX_VELOCITY / 2)
 		right_v = robot_wrapper.random.uniform(0, MAX_VELOCITY)
 		robot_wrapper.leds.set_all_colors("black")
 		robot_wrapper.leds.set_single_color(brightest.pos / 2, "yellow")
 	else
 		left_v = robot_wrapper.random.uniform(0, MAX_VELOCITY)
-		right_v = robot_wrapper.random.uniform(0, -MAX_VELOCITY)
+		right_v = robot_wrapper.random.uniform(0, -MAX_VELOCITY / 2)
 		robot_wrapper.leds.set_all_colors("black")
 		robot_wrapper.leds.set_single_color(brightest.pos / 2, "yellow")
 	end
