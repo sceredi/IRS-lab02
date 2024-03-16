@@ -32,7 +32,7 @@ function step()
 		random_walk()
 	elseif task == "light_found" then
 		light_found()
-	elseif task == "collision" then
+	elseif task == "collision_avoidance" then
 		collision_avoidance()
 	else
 		light_controller()
@@ -62,7 +62,7 @@ function define_task()
 	if sum_light > LIGHT_THRESHOLD then
 		return "light_found"
 	elseif closest > MAX_PROXIMITY then
-		return "collision"
+		return "collision_avoidance"
 	elseif sum_light < MIN_LIGHT then
 		return "random_walk"
 	else
