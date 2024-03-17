@@ -1,6 +1,8 @@
 # IRS Second Activity
 ## Objective
 Move the robot towards a light source as fast as possible avoiding obstacles
+### Addidional constraints
+It is imperative that the robot does not collide with any obstacles (walls, blocks, other robots, ...).
 
 ## Solution implemented
 ### Task definition
@@ -23,6 +25,20 @@ as fast as possible in its direction.
 
 ## Problem faced
 ### Solved
-### Partially solved
+The first problem encountered was being able to traverse obstacles angles while the light source was behind them. In this case the robot
+was switching modes one tick after the other and remaining in position as the collision avoidance task was making it avoid the obstacle,
+and immediately after the move task was making it go back towards the obsacle. This problem was solved by adding some randomicity in the robot
+move task, basically making it select randomly in a given range the speed of both wheels instead of using hardcoded values, while keeping
+the collision avoidance movements "deterministic" as the only randomness they would have is based on sensors and actuators noise.
+
 ### Unsolved
+The biggest problem faced and still unsolved is one in which in the arena a situation like the following presents itself:
+- There is a structure similar to a funnel in which:
+    - 2 walls are in the shape of an "L" with a bit of space in the middle
+    - Behind this middle bit the light source is present
+
+In this case the problem that arises is that the robot will get inside the funnel and wont be able to exit it. The reason for this
+behaviour is that it's easy for the robot to avoid obstacles and follow the light source, so it will naturally get to the "bottom"
+of the funnel, once inside it is impossible for the robot to exit because as soon as it is not anymore in the obstacle avoidance task
+it will start going towards the light making it get stuck in the bottom of the funnel.
 
