@@ -1,4 +1,4 @@
--- Put your global variables here
+-- utilities to avoid miss spelling functions or parameter of the robot interface
 local robot_wrapper = require("src.wrapper.robot_wrapper")
 local logger = require("src.wrapper.logger")
 
@@ -11,8 +11,6 @@ local n_steps = 0
 local left_v = 0
 local right_v = 0
 
---[[ This function is executed every time you press the 'execute'
-     button ]]
 function init()
 	left_v = 0
 	right_v = 0
@@ -21,31 +19,22 @@ function init()
 	n_steps = 0
 end
 
---[[ This function is executed at each time step
-     It must contain the logic of your controller ]]
 function step()
 	n_steps = n_steps + 1
-	-- logger.Log("Gonna move by " .. left_v .. " " .. right_v)
 	local task = define_task()
-	logger.log("Task: " .. task)
-	if task == "random_walk" then
-		random_walk()
-	elseif task == "light_found" then
-		light_found()
-	elseif task == "collision_avoidance" then
-		collision_avoidance()
-	else
-		light_controller()
-	end
-	-- logger.Log("Moving by " .. left_v .. " " .. right_v)
+	task()
 	robot_wrapper.wheels.set_velocity(left_v, right_v)
 end
 
+-- random_walk moves the robot in a random direction
 function random_walk()
+	logger.log("Random walk")
 	left_v = robot_wrapper.random.uniform(0, MAX_VELOCITY)
 	right_v = robot_wrapper.random.uniform(0, MAX_VELOCITY)
 	robot_wrapper.leds.set_all_colors("green")
 end
+
+-- define_task is used to select which task to execute in the current tick
 function define_task()
 	local sum_light = 0
 	for i = 1, 24 do
@@ -60,23 +49,27 @@ function define_task()
 		end
 	end
 	if sum_light > LIGHT_THRESHOLD then
-		return "light_found"
+		return light_found
 	elseif closest > MAX_PROXIMITY then
-		return "collision_avoidance"
+		return collision_avoidance
 	elseif sum_light < MIN_LIGHT then
-		return "random_walk"
+		return random_walk
 	else
-		return "move"
+		return phototaxis
 	end
 end
 
+-- light_found stops the robot
 function light_found()
+	logger.log("Light found")
 	robot_wrapper.leds.set_all_colors("yellow")
 	left_v = 0
 	right_v = 0
 end
 
+-- collision_avoidance rotates the robot away from an obstacle
 function collision_avoidance()
+	logger.log("Collision avoidance")
 	local closest = {
 		pos = 1,
 		value = robot_wrapper.get_proximity_sensor_readings()[1].value,
@@ -99,7 +92,9 @@ function collision_avoidance()
 	end
 end
 
-function light_controller()
+-- phototaxis moves the robot towards the light source
+function phototaxis()
+	logger.log("Phototaxis")
 	local brightest = {
 		pos = 1,
 		value = robot_wrapper.get_light_sensor_readings()[1].value,
@@ -131,22 +126,14 @@ function light_controller()
 	end
 end
 
---[[ This function is executed every time you press the 'reset'
-     button in the GUI. It is supposed to restore the state
-     of the controller to whatever it was right after init() was
-     called. The state of sensors and actuators is reset
-     automatically by ARGoS. ]]
 function reset()
 	left_v = 0
 	right_v = 0
-	-- robot.wheels.set_velocity(left_v, right_v)
 	robot_wrapper.wheels.set_velocity(left_v, right_v)
 	n_steps = 0
 	robot_wrapper.leds.set_all_colors("black")
 end
 
---[[ This function is executed only once, when the robot is removed
-     from the simulation ]]
 function destroy()
 	-- put your code here
 end
